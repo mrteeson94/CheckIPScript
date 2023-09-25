@@ -9,6 +9,8 @@
 # 1.1 Assign variable to take inputs (IP network e.g:'192.168.0' + mask e.g'255.255.255.0')
 # 1.2 Feed var in Validate_input's param for validation check
 # 1.3 Assign var to list of ports obtained from Read_ports function
+# 1.4 Ask user for range to assign IP addresses to host devices.
+# 1.5 Assign
 
 
 def main():
@@ -16,11 +18,17 @@ def main():
     while status:
         ip_network = input("Enter subnet prefix (e.g: 192.168.0): ")
         subnet_mask = input("Enter subnet mask (e.g: 255.255.255.0): ")
+
         if validate_input(ip_network, subnet_mask):
             print("Your IP provided is valid!")
             status = False
+
             ports = read_ports_file()
             print("The file contains the following ports:", ports)
+
+            print("We will now ask you for host ip range, please only provide numbers in range 1-254")
+            new_ipaddress_list = generate_ip_address(ip_network, subnet_mask)
+            print(new_ipaddress_list)
 
         else:
             print("Invalid IP or subnet mask, please provide input similar to the prompt examples")
@@ -62,7 +70,21 @@ def read_ports_file():
                 print("Please check your port.txt file and fix the issue")
     return port_list
 
-# 5. Ip address generation |
+# 4. Ip address generation | assign host number to complete the IP address within user range
+# Rules: 1. Skip 0-10 (thus start at 11) and 2.skip even number(all generated host ip will be odd)
+
+
+def generate_ip_address(ip_network, subnet_mask):
+    ipaddress_list = []
+    min_input = int(input("What is your starting number for host ip address range: "))
+    max_input = int(input("What is your ending host ip address number range: "))
+
+    for num in range(min_input, max_input+1):
+        if num > 10 and num % 2 != 0:
+            new_ipaddress = ip_network + '.' + str(num)
+            print(new_ipaddress)
+            ipaddress_list.append(new_ipaddress)
+    return ipaddress_list
 
 # 6.
 
