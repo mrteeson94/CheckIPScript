@@ -5,13 +5,15 @@
 # Version 1.0.1
 # Status 'Development'
 
+import socket
+
 # 1. Def and set MAIN() Function to execute all logic
 # 1.1 Assign variable to take inputs (IP network e.g:'192.168.0' + mask e.g'255.255.255.0')
 # 1.2 Feed var in Validate_input's param for validation check
 # 1.3 Assign var to list of ports obtained from Read_ports function
 # 1.4 Ask user for range to assign IP addresses to host devices.
-# 1.5 Assign
-
+# 1.5 Receive a list of all valid IPv4 addresses
+# 1.6 FOR each ipaddress check open_port status | print console + log message and store event log through win32
 
 def main():
     status = True
@@ -27,9 +29,13 @@ def main():
             print("The file contains the following ports:", ports)
 
             print("We will now ask you for host ip range, please only provide numbers in range 1-254")
-            new_ipaddress_list = generate_ip_address(ip_network, subnet_mask)
+            new_ipaddress_list = generate_ip_address(ip_network)
             print(new_ipaddress_list)
 
+            for ip_address in new_ipaddress_list:
+                port_status = port_scan(ip_address, ports)
+                print(f"Current open ports for {ip_address}:", port_status)
+# log messages + events on console, event viewer
         else:
             print("Invalid IP or subnet mask, please provide input similar to the prompt examples")
 
@@ -74,7 +80,7 @@ def read_ports_file():
 # Rules: 1. Skip 0-10 (thus start at 11) and 2.skip even number(all generated host ip will be odd)
 
 
-def generate_ip_address(ip_network, subnet_mask):
+def generate_ip_address(ip_network):
     ipaddress_list = []
     min_input = int(input("What is your starting number for host ip address range: "))
     max_input = int(input("What is your ending host ip address number range: "))
@@ -86,7 +92,25 @@ def generate_ip_address(ip_network, subnet_mask):
             ipaddress_list.append(new_ipaddress)
     return ipaddress_list
 
-# 6.
+# 6. Port_scan Function per IP address with list of ports from file | return open ports for that ip address
+
+
+def port_scan(ip_address, ports):
+    open_ports = []
+
+    for port in ports:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.settimeout(4)  # Check on metrics for int
+# Attempt to connect to the port
+        try:
+            client_socket.connect((ip_address, port))
+            open_ports.append(port)
+            client_socket.close()
+        except (socket.timeout, ConnectionRefusedError):
+            print(f"No connection to client via this port {port}")
+            pass
+    return open_ports
+
 
 # 7.
 
