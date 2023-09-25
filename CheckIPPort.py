@@ -93,7 +93,7 @@ def generate_ip_address(ip_network):
     return ipaddress_list
 
 # 6. Port_scan Function per IP address with list of ports from file | return open ports for that ip address
-
+# Need to include port closed and port unavailable for scanning messages and status for port
 
 def port_scan(ip_address, ports):
     open_ports = []
