@@ -17,9 +17,9 @@ def main():
         subnet_mask = input("Enter subnet mask (e.g: 255.255.255.0): ")
         if validate_input(ip_network, subnet_mask):
             print("Your IP provided is valid!")
+            status = False
         else:
             print("Invalid IP or subnet mask, please provide input similar to the prompt examples")
-            status = False
 
 
 # 2.Validate_input Function | check each octet is within range 0-255 for IP prefix
@@ -41,11 +41,11 @@ def validate_input(input_network, input_subnet):
     return True
 
 
-
 # 3.Validate_file Function | check ports.txt is in valid range of 1024-65535
-# 3.1 Check for valid range
+# 3.1 Check for valid range | numbers < 1024 should not be available
 # 3.2 Check for duplicates
 # return true (if all cond is met)
+
 
 # 4.Generate_IP() |
 
