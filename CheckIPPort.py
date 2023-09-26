@@ -7,13 +7,15 @@
 
 import socket
 
+
 # 1. Def and set MAIN() Function to execute all logic
-# 1.1 Assign variable to take inputs (IP network e.g:'192.168.0' + mask e.g'255.255.255.0')
+# 1.1 Assign variable to take inputs (IP network e.g:'192.168.0' + mask e.g "255.255.255.0")
 # 1.2 Feed var in Validate_input's param for validation check
 # 1.3 Assign var to list of ports obtained from Read_ports function
 # 1.4 Ask user for range to assign IP addresses to host devices.
 # 1.5 Receive a list of all valid IPv4 addresses
 # 1.6 FOR each ipaddress check open_port status | print console + log message and store event log through win32
+
 
 def main():
     status = True
@@ -81,7 +83,7 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = []
+    ipaddress_list = ["127.0.0.1"]
     min_input = int(input("What is your starting number for host ip address range: "))
     max_input = int(input("What is your ending host ip address number range: "))
 
@@ -95,26 +97,23 @@ def generate_ip_address(ip_network):
 # 6. Port_scan Function per IP address with list of ports from file | return open ports for that ip address
 # Need to include port closed and port unavailable for scanning messages and status for port
 
+
 def port_scan(ip_address, ports):
     open_ports = []
 
     for port in ports:
+        # INET = IPv4 internet connection \\ SOCK_STREAM = TCP socket
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(4)  # Check on metrics for int
+        client_socket.settimeout(3)  # Check on metrics for int
 # Attempt to connect to the port
         try:
             client_socket.connect((ip_address, port))
             open_ports.append(port)
             client_socket.close()
-        except (socket.timeout, ConnectionRefusedError):
-            print(f"No connection to client via this port {port}")
+        except (socket.timeout, ConnectionRefusedError) as e:
+            print(f"No connection to client via this port {port}, reason: {str(e)}")
             pass
     return open_ports
-
-
-# 7.
-
-# 8.
 
 
 main()
