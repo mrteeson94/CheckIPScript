@@ -4,7 +4,7 @@
 # Last Updated: 27/09/23
 # Version 1.0.1
 # Status 'Development'
-
+import pyfiglet
 import socket
 
 
@@ -18,6 +18,7 @@ import socket
 
 
 def main():
+    display_banner()
     status = True
     while status:
         ip_network = input("Enter subnet prefix (e.g: 192.168.0): ")
@@ -102,12 +103,15 @@ def port_scan(ip_address, ports):
     open_ports = []
 
     for port in ports:
-        # INET = IPv4 internet connection \\ SOCK_STREAM = TCP socket
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client_socket.settimeout(3)  # Check on metrics for int
-# Attempt to connect to the port
+        # Attempt to connect to the port
         try:
-            client_socket.connect((ip_address, port))
+            # INET = IPv4 internet connection \\ SOCK_STREAM = TCP socket
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client_socket.settimeout(1)  # Check on metrics for int
+            result = client_socket.connect_ex(ip_address, port)
+            # client_socket.connect((ip_address, port))
+            if result == 0:
+                print(f"[{port}] is open")
             open_ports.append(port)
             client_socket.close()
         except (socket.timeout, ConnectionRefusedError) as e:
@@ -115,5 +119,11 @@ def port_scan(ip_address, ports):
             pass
     return open_ports
 
+# 7. Extra feature: Application banner title upon application startup
+
+
+def display_banner():
+    banner = pyfiglet.figlet_format("PORT SCANNER")
+    print(banner)
 
 main()
