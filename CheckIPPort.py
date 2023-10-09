@@ -36,8 +36,11 @@ def main():
             print(new_ipaddress_list)
 
             for ip_address in new_ipaddress_list:
-                port_status = port_scan(ip_address, ports)
-                print(f"Current open ports for {ip_address}:", port_status)
+                open_status, close_status, unavail_status = port_scan(ip_address, ports)
+                print(f"Current open ports for {ip_address}:", open_status)
+                print(f"Current closed ports for {ip_address}:", close_status)
+                print(f"Current unavailable ports for {ip_address}:", unavail_status)
+
 # log messages + events on console, event viewer
         else:
             print("Invalid IP or subnet mask, please provide input similar to the prompt examples")
@@ -84,7 +87,7 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = ["127.0.0.1"]
+    ipaddress_list = []
     min_input = int(input("What is your starting number for host ip address range: "))
     max_input = int(input("What is your ending host ip address number range: "))
 
@@ -101,23 +104,32 @@ def generate_ip_address(ip_network):
 
 def port_scan(ip_address, ports):
     open_ports = []
+    close_ports = []
+    unavailable_ports = []
 
     for port in ports:
         # Attempt to connect to the port
         try:
             # INET = IPv4 internet connection \\ SOCK_STREAM = TCP socket
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client_socket.settimeout(1)  # Check on metrics for int
-            result = client_socket.connect_ex(ip_address, port)
+            client_socket.settimeout(1)
+            result = client_socket.connect_ex((ip_address, port))
             # client_socket.connect((ip_address, port))
             if result == 0:
+                open_ports.append(port)
                 print(f"[{port}] is open")
-            open_ports.append(port)
+
+            else:
+                close_ports.append(port)
+                print(f"[{port}] is closed")
+
             client_socket.close()
+
         except (socket.timeout, ConnectionRefusedError) as e:
-            print(f"No connection to client via this port {port}, reason: {str(e)}")
-            pass
-    return open_ports
+            print(f"[{port} isn't available], reason: {str(e)}")
+            unavailable_ports.append(port)
+
+    return open_ports, close_ports, unavailable_ports
 
 # 7. Extra feature: Application banner title upon application startup
 
@@ -125,5 +137,6 @@ def port_scan(ip_address, ports):
 def display_banner():
     banner = pyfiglet.figlet_format("PORT SCANNER")
     print(banner)
+
 
 main()
