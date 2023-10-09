@@ -13,12 +13,12 @@ import time
 
 
 # 1. Def and set MAIN() Function to execute all logic
-# 1.1 Assign variable to take inputs (IP network e.g:'192.168.0' + mask e.g "255.255.255.0")
+# 1.1 Assign variable to take input prompt for ipaddress and subnet
 # 1.2 Feed var in Validate_input's param for validation check
 # 1.3 Assign var to list of ports obtained from Read_ports function
 # 1.4 Ask user for range to assign IP addresses to host devices.
 # 1.5 Receive a list of all valid IPv4 addresses
-# 1.6 FOR each ipaddress check open_port status | print console + log message and store event log through win32
+# 1.6 FOR each ipaddress print + log file and log event log viewer
 
 
 def main():
@@ -35,21 +35,32 @@ def main():
             ports = read_ports_file()
             print("The file contains the following ports:", ports)
 
-            print("We will now ask you for host ip range, please only provide numbers in range 1-254")
+            print("please only provide numbers in range 1-254")
             new_ipaddress_list = generate_ip_address(ip_network)
             print(new_ipaddress_list)
 
             for ip_address in new_ipaddress_list:
-                open_status, close_status, unavail_status = port_scan(ip_address, ports)
-                print(f"{ip_address} port status- open:{open_status}, closed{close_status}, unavailable:{unavail_status}")
+                open_status, close_status, unavail_status = (
+                    port_scan(ip_address, ports)
+                )
+                print(f"{ip_address} port status-"
+                      f"open:{open_status}, "
+                      f"closed{close_status}, "
+                      f"unavailable:{unavail_status}")
                 # log messages + events on console, event viewer
-                logging_port_status(ip_address, open_status, close_status, unavail_status)
+                logging_port_status(
+                    ip_address,
+                    open_status,
+                    close_status,
+                    unavail_status
+                )
                 log_to_event_viewer(ip_address)
         else:
-            print("Invalid IP or subnet mask, please provide input similar to the prompt examples")
+            print(f"Invalid IP/subnet mask, "
+                  f"please provide correct address details")
 
 
-# 2.Validate_input Function | check each octet is within range 0-255 for IP prefix
+# 2.Validate_input Function check each octet is in range 0-255
 # 2.1 Check if there's 3 dots for both IP network and mask
 # (possibility of '/24' is given or a complete IPv4 provided)
 # 2.2 Check for valid range per octet 0-255
@@ -69,7 +80,7 @@ def validate_input(input_network, input_subnet):
     return True
 
 
-# 3.Validate_file Function | from requirement brief we can assume correct port numbers are provided
+# 3.Validate_file Function can assume correct port numbers are provided in file
 # return true (if all cond is met)
 
 def read_ports_file():
@@ -85,24 +96,25 @@ def read_ports_file():
                 print("Please check your port.txt file and fix the issue")
     return port_list
 
-# 4. Ip address generation | assign host number to complete the IP address within user range
-# Rules: 1. Skip 0-10 (thus start at 11) and 2.skip even number(all generated host ip will be odd)
+
+# 4.Ip generation assign host no. to complete the IP address within user range
+# Rules: Skip first 10 and skip even number
 
 
 def generate_ip_address(ip_network):
     ipaddress_list = []
-    min_input = int(input("What is your starting number for host ip address range: "))
-    max_input = int(input("What is your ending host ip address number range: "))
+    min_input = int(input("Your starting number for host ip address range: "))
+    max_input = int(input("Your ending host ip address number range: "))
 
-    for num in range(min_input, max_input+1):
+    for num in range(min_input, max_input + 1):
         if num > 10 and num % 2 != 0:
             new_ipaddress = ip_network + '.' + str(num)
             print(new_ipaddress)
             ipaddress_list.append(new_ipaddress)
     return ipaddress_list
 
-# 6. Port_scan Function per IP address with list of ports from file | return open ports for that ip address
-# Need to include port closed and port unavailable for scanning messages and status for port
+
+# 6. Port_scan Function per IP with list of ports return port status
 
 
 def port_scan(ip_address, ports):
@@ -162,8 +174,13 @@ def log_to_event_viewer(ip_address):
     event_source = "IP_Port_Scanner"
     event_id = int(time.time())
     event_msg = f"scanned IPv4: {ip_address}"
-    win32evtlogutil.ReportEvent(event_source, event_id, eventType=win32con.EVENTLOG_INFORMATION_TYPE, strings=[event_msg])
+    win32evtlogutil.ReportEvent(
+        event_source, event_id,
+        eventType=win32con.EVENTLOG_INFORMATION_TYPE,
+        strings=[event_msg])
     print(f"{ip_address} has been scanned and logged to event viewer!")
+
+
 # Extra feature: Application banner title upon application startup
 
 
