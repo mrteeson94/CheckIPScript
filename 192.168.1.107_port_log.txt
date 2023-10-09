@@ -1,0 +1,17 @@
+Port Status for 192.168.1.107
+Open ports:
+Closed ports:
+1
+4
+21
+22
+25
+80
+220
+443
+1024
+8000
+5000
+3901
+65534
+Unavailable ports:

@@ -6,6 +6,10 @@
 # Status 'Development'
 import pyfiglet
 import socket
+import os
+import win32evtlogutil
+import win32con
+import time
 
 
 # 1. Def and set MAIN() Function to execute all logic
@@ -37,11 +41,10 @@ def main():
 
             for ip_address in new_ipaddress_list:
                 open_status, close_status, unavail_status = port_scan(ip_address, ports)
-                print(f"Current open ports for {ip_address}:", open_status)
-                print(f"Current closed ports for {ip_address}:", close_status)
-                print(f"Current unavailable ports for {ip_address}:", unavail_status)
-
-# log messages + events on console, event viewer
+                print(f"{ip_address} port status- open:{open_status}, closed{close_status}, unavailable:{unavail_status}")
+                # log messages + events on console, event viewer
+                logging_port_status(ip_address, open_status, close_status, unavail_status)
+                log_to_event_viewer(ip_address)
         else:
             print("Invalid IP or subnet mask, please provide input similar to the prompt examples")
 
@@ -131,11 +134,41 @@ def port_scan(ip_address, ports):
 
     return open_ports, close_ports, unavailable_ports
 
-# 7. Extra feature: Application banner title upon application startup
+
+# 7. Logging ipaddress and all associated port status with that IPv4
+def logging_port_status(ip_address, open_status, close_status, unavail_status):
+    script_dir = os.path.dirname(os.path.abspath("CheckIPPort.py"))
+    log_file = os.path.join(script_dir, f"{ip_address}_port_log.txt")
+
+    with open(log_file, "w") as file:
+        file.write(f"Port Status for {ip_address}\n")
+
+        file.write("Open ports:\n")
+        for port in open_status:
+            file.write(f"{port}\n")
+
+        file.write("Closed ports:\n")
+        for port in close_status:
+            file.write(f"{port}\n")
+
+        file.write("Unavailable ports:\n")
+        for port in unavail_status:
+            file.write(f"{port}\n")
+
+
+# 8. logging the ipaddress to Win Event Log
+
+def log_to_event_viewer(ip_address):
+    event_source = "IP_Port_Scanner"
+    event_id = int(time.time())
+    event_msg = f"scanned IPv4: {ip_address}"
+    win32evtlogutil.ReportEvent(event_source, event_id, eventType=win32con.EVENTLOG_INFORMATION_TYPE, strings=[event_msg])
+    print(f"{ip_address} has been scanned and logged to event viewer!")
+# Extra feature: Application banner title upon application startup
 
 
 def display_banner():
-    banner = pyfiglet.figlet_format("PORT SCANNER")
+    banner = pyfiglet.figlet_format("TYSON'S PORT SCANNER")
     print(banner)
 
 
