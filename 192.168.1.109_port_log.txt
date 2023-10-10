@@ -8,4 +8,6 @@ Closed ports:
 8000
 49672
 49418
+64423
+64427
 Unavailable ports:

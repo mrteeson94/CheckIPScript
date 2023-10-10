@@ -25,9 +25,7 @@ def main():
     status = True
     while status:
         ip_network = input("Enter subnet prefix (e.g: 192.168.0): ")
-        subnet_mask = input("Enter subnet mask (e.g: 255.255.255.0): ")
-
-        if validate_input(ip_network, subnet_mask):
+        if validate_input(ip_network):
             print("Your IP provided is valid!")
             status = False
 
@@ -66,13 +64,11 @@ def main():
 # return true (if all cond is met)
 
 
-def validate_input(input_network, input_subnet):
+def validate_input(input_network):
     network_parts = list(map(int, input_network.split('.')))
-    subnet_parts = list(map(int, input_subnet.split('.')))
-
-    if len(network_parts) != 3 or len(subnet_parts) != 4:
+    if len(network_parts) != 3:
         return False
-    for part in subnet_parts + network_parts:
+    for part in network_parts:
         if not 0 <= int(part) <= 255:
             print("octet is out of range(0-255)")
             return False
@@ -125,9 +121,9 @@ def port_scan(ip_address, ports):
         try:
             # INET = IPv4 internet connection \\ SOCK_STREAM = TCP socket
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client_socket.settimeout(1)
+            client_socket.settimeout(5)
             result = client_socket.connect_ex((ip_address, port))
-            # client_socket.connect((ip_address, port))
+            # result = client_socket.connect((ip_address, port))
             if result == 0:
                 open_ports.append(port)
                 print(f"[{port}] is open")
