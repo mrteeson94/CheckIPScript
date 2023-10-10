@@ -4,14 +4,8 @@ Open ports:
 80
 443
 Closed ports:
-1
-4
-21
-22
-220
 1024
 8000
-5000
-3901
-65534
+49672
+49418
 Unavailable ports:

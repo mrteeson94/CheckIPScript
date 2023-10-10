@@ -11,7 +11,6 @@ import win32evtlogutil
 import win32con
 import time
 
-
 # 1. Def and set MAIN() Function to execute all logic
 # 1.1 Assign variable to take input prompt for ipaddress and subnet
 # 1.2 Feed var in Validate_input's param for validation check
@@ -102,7 +101,7 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = []
+    ipaddress_list = ["192.168.1.110"]
     min_input = int(input("Your starting number for host ip address range: "))
     max_input = int(input("Your ending host ip address number range: "))
 
@@ -112,7 +111,6 @@ def generate_ip_address(ip_network):
             print(new_ipaddress)
             ipaddress_list.append(new_ipaddress)
     return ipaddress_list
-
 
 # 6. Port_scan Function per IP with list of ports return port status
 
@@ -133,11 +131,9 @@ def port_scan(ip_address, ports):
             if result == 0:
                 open_ports.append(port)
                 print(f"[{port}] is open")
-
             else:
                 close_ports.append(port)
                 print(f"[{port}] is closed")
-
             client_socket.close()
 
         except (socket.timeout, ConnectionRefusedError) as e:
@@ -170,13 +166,22 @@ def logging_port_status(ip_address, open_status, close_status, unavail_status):
 
 # 8. logging the ipaddress to Win Event Log
 
-def log_to_event_viewer(ip_address):
+def log_to_event_viewer(ip_address, event_level="Information"):
     event_source = "IP_Port_Scanner"
     event_id = int(time.time())
     event_msg = f"scanned IPv4: {ip_address}"
+
+    event_type_map = {
+        "Information": win32con.EVENTLOG_INFORMATION_TYPE,
+        "Warning": win32con.EVENTLOG_WARNING_TYPE,
+        "Error": win32con.EVENTLOG_ERROR_TYPE,
+    }
+
+    log_event_type = event_type_map.get(event_level, win32con.EVENTLOG_INFORMATION_TYPE)
+
     win32evtlogutil.ReportEvent(
         event_source, event_id,
-        eventType=win32con.EVENTLOG_INFORMATION_TYPE,
+        eventType=log_event_type,
         strings=[event_msg])
     print(f"{ip_address} has been scanned and logged to event viewer!")
 
