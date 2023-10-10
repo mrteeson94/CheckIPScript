@@ -97,7 +97,7 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = ["192.168.1.110"]
+    ipaddress_list = ["127.0.0.1"]
     min_input = int(input("Your starting number for host ip address range: "))
     max_input = int(input("Your ending host ip address number range: "))
 
@@ -122,19 +122,19 @@ def port_scan(ip_address, ports):
             # INET = IPv4 internet connection \\ SOCK_STREAM = TCP socket
             client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client_socket.settimeout(5)
-            result = client_socket.connect_ex((ip_address, port))
-            # result = client_socket.connect((ip_address, port))
-            if result == 0:
-                open_ports.append(port)
-                print(f"[{port}] is open")
-            else:
-                close_ports.append(port)
-                print(f"[{port}] is closed")
+            # result = client_socket.connect_ex((ip_address, port))
+            client_socket.connect((ip_address, port))
+            open_ports.append(port)
+            print(f"[{port}] is open")
             client_socket.close()
 
-        except (socket.timeout, ConnectionRefusedError) as e:
+        except socket.timeout as e:
             print(f"[{port} isn't available], reason: {str(e)}")
             unavailable_ports.append(port)
+
+        except ConnectionRefusedError as e:
+            close_ports.append(port)
+            print(f"[{port}] is closed, reason: {str(e)}")
 
     return open_ports, close_ports, unavailable_ports
 
