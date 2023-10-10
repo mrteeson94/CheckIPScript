@@ -186,7 +186,7 @@ def log_to_event_viewer(ip_address, event_level="Information"):
 
 
 def display_banner():
-    banner = pyfiglet.figlet_format("TYSON'S PORT SCANNER")
+    banner = pyfiglet.figlet_format("GELO'S PORT SCANNER")
     print(banner)
 
 

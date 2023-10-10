@@ -1,13 +1,11 @@
 Port Status for 192.168.1.109
 Open ports:
+Closed ports:
+Unavailable ports:
 25
 80
 443
-Closed ports:
 1024
+5354
 8000
-49672
-49418
-64423
-64427
-Unavailable ports:
+49669
