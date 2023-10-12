@@ -1,0 +1,11 @@
+Port Status for 172.27.216.1
+Open ports:
+80
+443
+Closed ports:
+25
+1024
+5354
+8000
+49669
+Unavailable ports:

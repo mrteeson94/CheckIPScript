@@ -1,0 +1,11 @@
+Port Status for 104.21.31.82
+Open ports:
+80
+443
+Closed ports:
+Unavailable ports:
+25
+1024
+5354
+8000
+49669

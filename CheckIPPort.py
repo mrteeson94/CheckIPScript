@@ -68,10 +68,17 @@ def validate_input(input_network):
     network_parts = list(map(int, input_network.split('.')))
     if len(network_parts) != 3:
         return False
+
     for part in network_parts:
-        if not 0 <= int(part) <= 255:
-            print("octet is out of range(0-255)")
-            return False
+        try:
+            part_in_int = int(part)
+            if not 0 <= part_in_int <= 255:
+                print("octet is out of range(0-255)")
+                return False
+        except ValueError:
+            print("wrong network address provided,"
+                  "please provide valid network address,"
+                  "e.g. 192.168.1")
     return True
 
 
@@ -97,7 +104,7 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = ["127.0.0.1"]
+    ipaddress_list = ["172.27.216.1"]
     min_input = int(input("Your starting number for host ip address range: "))
     max_input = int(input("Your ending host ip address number range: "))
 
