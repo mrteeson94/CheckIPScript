@@ -99,9 +99,11 @@ def read_ports_file():
     with open(ports_file, "r") as file:
         for line in file:
             try:
-
                 port = int(line.strip())
-                port_list.append(port)
+                if port in port_list:
+                    print(f"{port} exist, skipping...")
+                else:
+                    port_list.append(port)
             except Exception as e:
                 print(f"An error has occurred while reading file: {str(e)}")
                 print("Please check your port.txt file and fix the issue")
