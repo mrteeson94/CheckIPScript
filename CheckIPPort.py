@@ -51,7 +51,8 @@ def main():
                     close_status,
                     unavail_status
                 )
-                log_to_event_viewer(ip_address)
+            log_to_event_viewer(new_ipaddress_list)
+
         else:
             print("Invalid IP provided, "
                   "please provide correct address details")
@@ -115,7 +116,7 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = ["192.168.1.1"]
+    ipaddress_list = ["192.168.1.1", "127.0.0.1"]
     # for num in range(1, 254):
     #     if num > 10 and num % 2 != 0:
     #         new_ipaddress = ip_network + '.' + str(num)
@@ -178,24 +179,31 @@ def logging_port_status(ip_address, open_status, close_status, unavail_status):
 
 # 8. logging the ipaddress to Win Event Log
 
-def log_to_event_viewer(ip_address, event_level="Information"):
-    event_source = "IP_Port_Scanner"
-    event_id = int(time.time())
-    event_msg = f"scanned IPv4: {ip_address}"
+def log_to_event_viewer(ip_address_list, event_level="Information"):
+    ip_evt_name = " CheckIPPort - IP-Port Scan Application"
+    ip_evt_id = int(time.time())
+    ip_evt_category = 9876
+    ip_evt_strs = ip_address_list
+    ip_evt_data = b"Scanned IP Address Event Data"
 
+    # event_source = "IP_Port_Scanner"
+    # event_id = int(time.time())
+    # event_msg = f"scanned IPv4: {ip_address}"
     event_type_map = {
         "Information": win32con.EVENTLOG_INFORMATION_TYPE,
         "Warning": win32con.EVENTLOG_WARNING_TYPE,
         "Error": win32con.EVENTLOG_ERROR_TYPE,
     }
-
     log_event_type = event_type_map.get(event_level, win32con.EVENTLOG_INFORMATION_TYPE)
 
-    win32evtlogutil.ReportEvent(
-        event_source, event_id,
-        eventType=log_event_type,
-        strings=[event_msg])
-    print(f"{ip_address} has been scanned and logged to event viewer!")
+    win32evtlogutil.ReportEvent(ip_evt_name,
+                                ip_evt_id,
+                                eventCategory=ip_evt_category,
+                                eventType=log_event_type,
+                                strings=ip_evt_strs,
+                                data=ip_evt_data)
+
+    print(f"{ip_address_list} has been scanned and logged to event viewer!")
 
 
 # Extra feature: Application banner title upon application startup

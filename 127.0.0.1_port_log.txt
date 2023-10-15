@@ -1,9 +1,7 @@
 Port Status for 127.0.0.1
 Open ports:
-13386
 Closed ports:
 80
 25
 443
-8000
 Unavailable ports:
