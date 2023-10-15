@@ -88,6 +88,9 @@ def validate_input(input_network):
 def read_ports_file():
     port_list = []
     ports_file = "ports.txt"
+    if os.path.getsize(ports_file) == 0:
+        print("File is empty, please fill in valid ports.")
+        exit()
     with open(ports_file, "r") as file:
         for line in file:
             try:
@@ -104,7 +107,7 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = ["127.0.0.1"]
+    ipaddress_list = ["192.168.1.1"]
     # for num in range(1, 254):
     #     if num > 10 and num % 2 != 0:
     #         new_ipaddress = ip_network + '.' + str(num)

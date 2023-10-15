@@ -1,0 +1,8 @@
+Port Status for 192.168.1.1
+Open ports:
+80
+80
+Closed ports:
+25
+443
+Unavailable ports:
