@@ -104,18 +104,17 @@ def read_ports_file():
 
 
 def generate_ip_address(ip_network):
-    ipaddress_list = ["172.27.216.1"]
-    min_input = int(input("Your starting number for host ip address range: "))
-    max_input = int(input("Your ending host ip address number range: "))
+    ipaddress_list = ["127.0.0.1"]
+    # for num in range(1, 254):
+    #     if num > 10 and num % 2 != 0:
+    #         new_ipaddress = ip_network + '.' + str(num)
+    #         print(new_ipaddress)
+    #         ipaddress_list.append(new_ipaddress)
 
-    for num in range(min_input, max_input + 1):
-        if num > 10 and num % 2 != 0:
-            new_ipaddress = ip_network + '.' + str(num)
-            print(new_ipaddress)
-            ipaddress_list.append(new_ipaddress)
     return ipaddress_list
 
 # 6. Port_scan Function per IP with list of ports return port status
+# TRY connect_ex(ip, port), 0 == open port, erno.ECONNREFUSED (closed), erno.ETIMEOUT (unavilable)
 
 
 def port_scan(ip_address, ports):
