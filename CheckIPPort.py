@@ -53,8 +53,8 @@ def main():
                 )
                 log_to_event_viewer(ip_address)
         else:
-            print(f"Invalid IP/subnet mask, "
-                  f"please provide correct address details")
+            print("Invalid IP provided, "
+                  "please provide correct address details")
 
 
 # 2.Validate_input Function check each octet is in range 0-255
@@ -65,20 +65,25 @@ def main():
 
 
 def validate_input(input_network):
-    network_parts = list(map(int, input_network.split('.')))
-    if len(network_parts) != 3:
+    try:
+        network_parts = list(map(int, input_network.split('.')))
+        if len(network_parts) != 3:
+            print("Please provide only the first"
+                  " 3 octets of the network address")
+            return False
+    except ValueError:
+        print("Invalid network address provided,"
+              " please provide valid values "
+              "e.g. 192.168.1\n"
+              "----------------------------")
         return False
 
     for part in network_parts:
-        try:
-            part_in_int = int(part)
-            if not 0 <= part_in_int <= 255:
-                print("octet is out of range(0-255)")
-                return False
-        except ValueError:
-            print("wrong network address provided,"
-                  "please provide valid network address,"
-                  "e.g. 192.168.1")
+        part_in_int = int(part)
+        if not 0 <= part_in_int <= 255:
+            print("octet is out of range(0-255)")
+            return False
+
     return True
 
 
@@ -94,6 +99,7 @@ def read_ports_file():
     with open(ports_file, "r") as file:
         for line in file:
             try:
+
                 port = int(line.strip())
                 port_list.append(port)
             except Exception as e:
@@ -117,7 +123,6 @@ def generate_ip_address(ip_network):
     return ipaddress_list
 
 # 6. Port_scan Function per IP with list of ports return port status
-# TRY connect_ex(ip, port), 0 == open port, erno.ECONNREFUSED (closed), erno.ETIMEOUT (unavilable)
 
 
 def port_scan(ip_address, ports):
